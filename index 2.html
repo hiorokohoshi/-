@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lingua — Daily English</title>
+
+<!-- PWA meta tags -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f1419">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lingua">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1419;
+    --bg-elevated: #1a2028;
+    --bg-card: #232a34;
+    --border: #2f3744;
+    --border-bright: #3d4756;
+    --text: #e8ecf1;
+    --text-dim: #8a93a3;
+    --text-faint: #5a6373;
+    --gold: #d4a85a;
+    --gold-bright: #e8c179;
+    --crimson: #c14545;
+    --emerald: #5fa372;
+    --emerald-bright: #7bc18c;
+    --azure: #5b8bb8;
+    --shadow-deep: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 0%, rgba(212, 168, 90, 0.06), transparent),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(91, 139, 184, 0.05), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 20px 16px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ HEADER ============ */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 4px;
+    margin-bottom: 24px;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    color: var(--gold);
+  }
+
+  .logo::before {
+    content: '◆ ';
+    color: var(--gold-bright);
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .stat-icon {
+    font-size: 14px;
+    display: inline-block;
+  }
+
+  .icon-streak { color: var(--gold-bright); }
+  .icon-heart { color: var(--crimson); }
+  .icon-xp { color: var(--emerald-bright); }
+
+  /* ============ HOME SCREEN ============ */
+  .greeting {
+    margin-bottom: 28px;
+  }
+
+  .greeting-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .greeting-text {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .greeting-text em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* Level Card */
+  .level-card {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .level-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(212, 168, 90, 0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .level-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .level-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .level-value {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--gold-bright);
+  }
+
+  .xp-bar {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .xp-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Daily Quest Section */
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    padding-left: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .quest-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .quest {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quest:hover {
+    border-color: var(--border-bright);
+    transform: translateX(2px);
+  }
+
+  .quest.completed {
+    opacity: 0.5;
+  }
+
+  .quest.completed::after {
+    content: '✓';
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--emerald-bright);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .quest-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .quest-icon.q1 { background: rgba(212, 168, 90, 0.12); }
+  .quest-icon.q2 { background: rgba(91, 139, 184, 0.12); }
+  .quest-icon.q3 { background: rgba(95, 163, 114, 0.12); }
+  .quest-icon.q4 { background: rgba(193, 69, 69, 0.12); }
+
+  .quest-info {
+    flex: 1;
+  }
+
+  .quest-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .quest-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+  }
+
+  .quest-xp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold-bright);
+    font-weight: 500;
+  }
+
+  /* Streak Calendar */
+  .streak-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+
+  .streak-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .streak-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .streak-flame {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold-bright);
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .day-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--bg);
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+  }
+
+  .day-cell.done {
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+    color: var(--bg);
+    border-color: var(--gold);
+    font-weight: 600;
+  }
+
+  .day-cell.today {
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+
+  /* ============ LESSON SCREEN ============ */
+  .lesson-screen {
+    display: none;
+  }
+
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .btn-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .btn-close:hover {
+    border-color: var(--crimson);
+    color: var(--crimson);
+  }
+
+  .lesson-progress {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-card);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .lesson-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--emerald), var(--emerald-bright));
+    border-radius: 4px;
+    transition: width 0.4s;
+  }
+
+  .hearts {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--crimson);
+  }
+
+  /* Lesson Card */
+  .lesson-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lesson-instruction {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .lesson-question {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Audio Player */
+  .audio-player {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .audio-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+    color: var(--bg);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(212, 168, 90, 0.3);
+  }
+
+  .audio-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .audio-btn:active {
+    transform: scale(0.95);
+  }
+
+  .audio-info {
+    flex: 1;
+  }
+
+  .audio-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .audio-speed {
+    display: flex;
+    gap: 6px;
+  }
+
+  .speed-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .speed-btn.active {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+  }
+
+  /* Chunk Display */
+  .chunks-display {
+    margin-bottom: 20px;
+    min-height: 60px;
+  }
+
+  .chunk {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    transition: all 0.3s;
+  }
+
+  .chunk.playing {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+    transform: scale(1.05);
+  }
+
+  .chunk.hidden {
+    color: transparent;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--bg) 0,
+      var(--bg) 6px,
+      var(--border) 6px,
+      var(--border) 12px
+    );
+    user-select: none;
+  }
+
+  /* Choice Buttons (Multiple Choice) */
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .choice:hover {
+    border-color: var(--border-bright);
+    transform: translateX(2px);
+  }
+
+  .choice.selected {
+    border-color: var(--azure);
+    background: rgba(91, 139, 184, 0.08);
+  }
+
+  .choice.correct {
+    border-color: var(--emerald);
+    background: rgba(95, 163, 114, 0.12);
+  }
+
+  .choice.wrong {
+    border-color: var(--crimson);
+    background: rgba(193, 69, 69, 0.1);
+  }
+
+  .choice-jp {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 4px;
+  }
+
+  /* Dictation Input */
+  .dictation-area {
+    margin-bottom: 16px;
+  }
+
+  .dictation-display {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.6;
+    padding: 16px 0;
+    margin-bottom: 12px;
+    min-height: 60px;
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 2px solid var(--gold);
+    padding: 0 6px;
+    margin: 0 2px;
+    text-align: center;
+    color: var(--gold-bright);
+  }
+
+  .blank.empty {
+    color: transparent;
+  }
+
+  .blank.correct {
+    border-color: var(--emerald);
+    color: var(--emerald-bright);
+  }
+
+  .blank.wrong {
+    border-color: var(--crimson);
+    color: var(--crimson);
+  }
+
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .word-chip {
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .word-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+
+  .word-chip.used {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Speaking Practice */
+  .speaking-card {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .target-phrase {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    color: var(--gold-bright);
+  }
+
+  .target-jp {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  .mic-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--crimson), #d65555);
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(193, 69, 69, 0.3);
+    transition: all 0.2s;
+  }
+
+  .mic-button:hover {
+    transform: scale(1.05);
+  }
+
+  .mic-button.recording {
+    animation: pulse 1.2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(193, 69, 69, 0.5); }
+    50% { box-shadow: 0 0 0 16px rgba(193, 69, 69, 0); }
+  }
+
+  .mic-hint {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .transcript {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    min-height: 40px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  /* Bottom Action */
+  .lesson-footer {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    flex: 1;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+    color: var(--bg);
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 168, 90, 0.3);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    padding: 16px 20px;
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Feedback Banner */
+  .feedback-banner {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--emerald);
+    display: none;
+  }
+
+  .feedback-banner.show { display: block; }
+  .feedback-banner.correct { border-left-color: var(--emerald); }
+  .feedback-banner.wrong { border-left-color: var(--crimson); }
+
+  .feedback-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .feedback-title.correct { color: var(--emerald-bright); }
+  .feedback-title.wrong { color: var(--crimson); }
+
+  .feedback-detail {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .feedback-detail strong {
+    color: var(--text);
+  }
+
+  /* Completion Screen */
+  .complete-screen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .complete-mark {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 60px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .complete-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .complete-subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .rewards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .reward {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 8px;
+  }
+
+  .reward-value {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--gold-bright);
+    margin-bottom: 2px;
+  }
+
+  .reward-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-faint);
+  }
+
+  /* Utility */
+  .fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .shake {
+    animation: shake 0.4s;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ HEADER ============ -->
+  <div class="top-bar">
+    <div class="logo">Lingua</div>
+    <div class="stats-row">
+      <div class="stat-pill"><span class="stat-icon icon-streak">▲</span><span id="streakCount">0</span></div>
+      <div class="stat-pill"><span class="stat-icon icon-heart">♥</span><span id="heartCount">5</span></div>
+      <div class="stat-pill"><span class="stat-icon icon-xp">◆</span><span id="totalXp">0</span></div>
+    </div>
+  </div>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <div id="homeScreen">
+    <div class="greeting">
+      <div class="greeting-label">Today's Practice</div>
+      <div class="greeting-text">こんにちは、<em>Hiro</em>さん</div>
+    </div>
+
+    <!-- Level Card -->
+    <div class="level-card">
+      <div class="level-row">
+        <span class="level-label">Level</span>
+        <span class="level-value" id="levelValue">1</span>
+      </div>
+      <div class="xp-bar">
+        <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+      </div>
+      <div class="xp-text">
+        <span id="currentXp">0 XP</span>
+        <span id="nextLevelXp">100 XP まで</span>
+      </div>
+    </div>
+
+    <!-- Streak Calendar -->
+    <div class="streak-card">
+      <div class="streak-header">
+        <span class="streak-title">This Week</span>
+        <span class="streak-flame" id="streakDays">0 days</span>
+      </div>
+      <div class="week-grid" id="weekGrid"></div>
+    </div>
+
+    <!-- Daily Quests -->
+    <div class="section-title">Daily Quests · 今日のクエスト</div>
+    <div class="quest-grid" id="questGrid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- ============ LESSON SCREEN ============ -->
+  <div class="lesson-screen" id="lessonScreen">
+    <div class="lesson-header">
+      <button class="btn-close" onclick="exitLesson()">×</button>
+      <div class="lesson-progress">
+        <div class="lesson-progress-fill" id="lessonProgress" style="width: 0%"></div>
+      </div>
+      <div class="hearts"><span class="stat-icon icon-heart">♥</span><span id="lessonHearts">5</span></div>
+    </div>
+
+    <div class="lesson-card" id="lessonCard">
+      <!-- populated by JS -->
+    </div>
+
+    <div class="feedback-banner" id="feedbackBanner">
+      <div class="feedback-title" id="feedbackTitle"></div>
+      <div class="feedback-detail" id="feedbackDetail"></div>
+    </div>
+
+    <div class="lesson-footer">
+      <button class="btn-primary" id="checkBtn" onclick="checkAnswer()" disabled>Check 確認</button>
+    </div>
+  </div>
+
+  <!-- ============ COMPLETION SCREEN ============ -->
+  <div class="complete-screen" id="completeScreen">
+    <div class="complete-mark">Bravo</div>
+    <div class="complete-title">Quest Complete</div>
+    <div class="complete-subtitle">クエスト完了 · お疲れさまでした</div>
+    <div class="rewards">
+      <div class="reward">
+        <div class="reward-value" id="rewardXp">+0</div>
+        <div class="reward-label">XP</div>
+      </div>
+      <div class="reward">
+        <div class="reward-value" id="rewardAccuracy">0%</div>
+        <div class="reward-label">Accuracy</div>
+      </div>
+      <div class="reward">
+        <div class="reward-value" id="rewardTime">0:00</div>
+        <div class="reward-label">Time</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="returnHome()">Continue</button>
+  </div>
+
+</div>
+
+<script>
+// ============ STATE ============
+let state = {
+  xp: 0,
+  level: 1,
+  hearts: 5,
+  streak: 0,
+  lastPlayedDate: null,
+  weekDone: [false, false, false, false, false, false, false], // Mon-Sun
+  questsCompleted: { ch: false, dc: false, sp: false, sh: false },
+  currentQuest: null,
+  currentStep: 0,
+  currentHearts: 5,
+  lessonStartTime: null,
+  lessonCorrect: 0,
+  lessonTotal: 0,
+  selectedAnswer: null,
+  audioPlaying: false,
+  speed: 1.0,
+};
+
+// ============ STORAGE ============
+async function loadState() {
+  try {
+    const saved = localStorage.getItem('lingua_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+      // Reset daily quests if new day
+      const today = new Date().toDateString();
+      if (state.lastPlayedDate !== today) {
+        // Check streak
+        if (state.lastPlayedDate) {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          if (state.lastPlayedDate !== yesterday.toDateString()) {
+            state.streak = 0;
+            state.weekDone = [false, false, false, false, false, false, false];
+          }
+        }
+        state.questsCompleted = { ch: false, dc: false, sp: false, sh: false };
+      }
+    }
+  } catch (e) {
+    // First time use, no saved state
+  }
+}
+
+async function saveState() {
+  try {
+    localStorage.setItem('lingua_state', JSON.stringify(state));
+  } catch (e) {
+    console.error('Save failed', e);
+  }
+}
+
+// ============ LESSON CONTENT ============
+const lessons = {
+  // Chunked Listening — break long sentences into meaning chunks
+  ch: {
+    title: 'Chunked Listening',
+    subtitle: 'チャンク聴解 · 長文を意味のかたまりで',
+    icon: '◐',
+    xp: 30,
+    items: [
+      {
+        type: 'chunk_listen',
+        chunks: ['I was wondering', 'if you could help me', 'figure out', 'where to find', 'a good coffee shop', 'around here.'],
+        full: 'I was wondering if you could help me figure out where to find a good coffee shop around here.',
+        jp: 'この辺りで良いカフェを見つけるのを手伝ってもらえないかと思っていまして。',
+        question: 'What did the speaker ask?',
+        choices: [
+          { en: 'Help finding a coffee shop nearby', jp: '近くのカフェを探すのを手伝うこと', correct: true },
+          { en: 'Directions to a friend\'s house', jp: '友達の家への道順', correct: false },
+          { en: 'A recommendation for breakfast', jp: '朝食のおすすめ', correct: false },
+        ]
+      },
+      {
+        type: 'chunk_listen',
+        chunks: ['By the time I got home,', 'I realized', 'I had left my keys', 'at the office,', 'so I had to go back.'],
+        full: 'By the time I got home, I realized I had left my keys at the office, so I had to go back.',
+        jp: '家に着いた時に、鍵をオフィスに置いてきたことに気づいて、戻らなければなりませんでした。',
+        question: 'What happened?',
+        choices: [
+          { en: 'He forgot his keys and went back to the office', jp: '鍵を忘れてオフィスに戻った', correct: true },
+          { en: 'He locked himself out of his office', jp: 'オフィスに鍵を閉じ込めた', correct: false },
+          { en: 'He arrived home very late from work', jp: '仕事から帰宅が遅くなった', correct: false },
+        ]
+      },
+      {
+        type: 'chunk_listen',
+        chunks: ['Would you mind', 'taking a quick look', 'at this email', 'before I send it', 'to the client?'],
+        full: 'Would you mind taking a quick look at this email before I send it to the client?',
+        jp: 'クライアントに送る前に、このメールをちょっと見てもらってもいいですか?',
+        question: 'What is being requested?',
+        choices: [
+          { en: 'Review an email before sending', jp: '送信前にメールをチェック', correct: true },
+          { en: 'Write an email to a client', jp: 'クライアントにメールを書く', correct: false },
+          { en: 'Forward an email to someone', jp: '誰かにメールを転送する', correct: false },
+        ]
+      },
+    ]
+  },
+  // Dictation — fill in the blanks
+  dc: {
+    title: 'Dictation',
+    subtitle: 'ディクテーション · 聞き取って空欄を埋める',
+    icon: '◑',
+    xp: 25,
+    items: [
+      {
+        type: 'dictation',
+        full: 'I usually grab a coffee on my way to work.',
+        jp: '出勤途中にいつもコーヒーを買います。',
+        blanks: ['grab', 'on', 'work'],
+        template: ['I', 'usually', '___', 'a', 'coffee', '___', 'my', 'way', 'to', '___.'],
+        bank: ['grab', 'take', 'buy', 'on', 'in', 'at', 'work', 'home', 'office']
+      },
+      {
+        type: 'dictation',
+        full: 'Could you let me know when you arrive?',
+        jp: '到着したら連絡してもらえますか?',
+        blanks: ['let', 'know', 'arrive'],
+        template: ['Could', 'you', '___', 'me', '___', 'when', 'you', '___?'],
+        bank: ['let', 'tell', 'give', 'know', 'see', 'hear', 'arrive', 'come', 'go']
+      },
+      {
+        type: 'dictation',
+        full: "I'd rather stay home tonight than go out.",
+        jp: '今夜は外出するよりも家にいたいです。',
+        blanks: ['rather', 'tonight', 'out'],
+        template: ["I'd", '___', 'stay', 'home', '___', 'than', 'go', '___.'],
+        bank: ['rather', 'really', 'prefer', 'tonight', 'today', 'tomorrow', 'out', 'in', 'away']
+      },
+    ]
+  },
+  // Speaking — produce the phrase
+  sp: {
+    title: 'Speaking',
+    subtitle: 'スピーキング · 声に出す',
+    icon: '◓',
+    xp: 30,
+    items: [
+      {
+        type: 'speaking',
+        target: "Could you say that again, please?",
+        jp: 'もう一度言っていただけますか?',
+        hint: '聞き返すときの定番フレーズ',
+      },
+      {
+        type: 'speaking',
+        target: "I'm not sure I follow what you mean.",
+        jp: 'おっしゃっている意味がよく分かりません。',
+        hint: '理解できないことを伝える',
+      },
+      {
+        type: 'speaking',
+        target: "Let me think about it for a moment.",
+        jp: '少し考えさせてください。',
+        hint: '考える時間を求める',
+      },
+    ]
+  },
+  // Shadowing — listen and repeat with rhythm
+  sh: {
+    title: 'Shadowing',
+    subtitle: 'シャドーイング · 音声に重ねて話す',
+    icon: '◒',
+    xp: 35,
+    items: [
+      {
+        type: 'shadowing',
+        text: "It's been a while since we last met. How have you been doing?",
+        jp: 'お久しぶりですね。お元気にされていましたか?',
+        chunks: ["It's been a while", "since we last met.", "How have you been doing?"],
+      },
+      {
+        type: 'shadowing',
+        text: "I'd love to grab dinner sometime if you're free next week.",
+        jp: '来週もしお時間があれば、ぜひ夕食でもいかがですか。',
+        chunks: ["I'd love to grab dinner", "sometime", "if you're free", "next week."],
+      },
+      {
+        type: 'shadowing',
+        text: "Thanks for letting me know — I really appreciate it.",
+        jp: '教えてくれてありがとう、本当に感謝します。',
+        chunks: ["Thanks for letting me know", "I really appreciate it."],
+      },
+    ]
+  }
+};
+
+// ============ INIT ============
+async function init() {
+  await loadState();
+  renderHome();
+}
+
+function renderHome() {
+  document.getElementById('homeScreen').style.display = 'block';
+  document.getElementById('lessonScreen').style.display = 'none';
+  document.getElementById('completeScreen').style.display = 'none';
+
+  // Stats
+  document.getElementById('streakCount').textContent = state.streak;
+  document.getElementById('heartCount').textContent = state.hearts;
+  document.getElementById('totalXp').textContent = state.xp;
+  document.getElementById('levelValue').textContent = state.level;
+  document.getElementById('streakDays').textContent = state.streak + ' day' + (state.streak === 1 ? '' : 's');
+
+  // XP bar
+  const xpInLevel = state.xp - (state.level - 1) * 100;
+  const xpProgress = (xpInLevel / 100) * 100;
+  document.getElementById('xpFill').style.width = xpProgress + '%';
+  document.getElementById('currentXp').textContent = xpInLevel + ' XP';
+  document.getElementById('nextLevelXp').textContent = (100 - xpInLevel) + ' XP まで Lv.' + (state.level + 1);
+
+  // Week grid
+  const today = new Date().getDay(); // 0=Sun, 1=Mon...
+  const todayIndex = today === 0 ? 6 : today - 1; // Mon=0, Sun=6
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const weekGrid = document.getElementById('weekGrid');
+  weekGrid.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+    if (state.weekDone[i]) cell.classList.add('done');
+    if (i === todayIndex) cell.classList.add('today');
+    cell.textContent = dayLabels[i];
+    weekGrid.appendChild(cell);
+  }
+
+  // Quests
+  const questGrid = document.getElementById('questGrid');
+  questGrid.innerHTML = '';
+  const quests = [
+    { id: 'ch', title: 'Chunked Listening', meta: 'チャンク聴解 · 3 items', xp: 30, iconClass: 'q1', icon: '◐' },
+    { id: 'dc', title: 'Dictation', meta: 'ディクテーション · 3 items', xp: 25, iconClass: 'q2', icon: '◑' },
+    { id: 'sp', title: 'Speaking', meta: 'スピーキング · 3 items', xp: 30, iconClass: 'q3', icon: '◓' },
+    { id: 'sh', title: 'Shadowing', meta: 'シャドーイング · 3 items', xp: 35, iconClass: 'q4', icon: '◒' },
+  ];
+  quests.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'quest' + (state.questsCompleted[q.id] ? ' completed' : '');
+    div.onclick = () => startLesson(q.id);
+    div.innerHTML = `
+      <div class="quest-icon ${q.iconClass}">${q.icon}</div>
+      <div class="quest-info">
+        <div class="quest-title">${q.title}</div>
+        <div class="quest-meta">${q.meta}</div>
+      </div>
+      <div class="quest-xp">+${q.xp} XP</div>
+    `;
+    questGrid.appendChild(div);
+  });
+}
+
+// ============ LESSON FLOW ============
+function startLesson(questId) {
+  if (state.questsCompleted[questId]) return;
+  state.currentQuest = questId;
+  state.currentStep = 0;
+  state.currentHearts = state.hearts;
+  state.lessonStartTime = Date.now();
+  state.lessonCorrect = 0;
+  state.lessonTotal = 0;
+  state.selectedAnswer = null;
+
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('lessonScreen').style.display = 'block';
+  document.getElementById('completeScreen').style.display = 'none';
+
+  renderLessonStep();
+}
+
+function renderLessonStep() {
+  const quest = lessons[state.currentQuest];
+  const item = quest.items[state.currentStep];
+  const progress = (state.currentStep / quest.items.length) * 100;
+
+  document.getElementById('lessonProgress').style.width = progress + '%';
+  document.getElementById('lessonHearts').textContent = state.currentHearts;
+  document.getElementById('feedbackBanner').classList.remove('show', 'correct', 'wrong');
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('checkBtn').textContent = 'Check 確認';
+
+  const card = document.getElementById('lessonCard');
+  card.classList.remove('fade-in');
+  void card.offsetWidth;
+  card.classList.add('fade-in');
+
+  if (item.type === 'chunk_listen') {
+    renderChunkListen(card, item);
+  } else if (item.type === 'dictation') {
+    renderDictation(card, item);
+  } else if (item.type === 'speaking') {
+    renderSpeaking(card, item);
+  } else if (item.type === 'shadowing') {
+    renderShadowing(card, item);
+  }
+}
+
+// ============ CHUNK LISTENING ============
+function renderChunkListen(card, item) {
+  card.innerHTML = `
+    <div class="lesson-instruction">Step ${state.currentStep + 1} / ${lessons[state.currentQuest].items.length}</div>
+    <div class="lesson-question">音声を聞いて答えてください</div>
+
+    <div class="audio-player">
+      <button class="audio-btn" onclick="playChunks(${state.currentStep})">▶</button>
+      <div class="audio-info">
+        <div class="audio-label">CHUNKED · 意味のかたまりごと</div>
+        <div class="audio-speed">
+          <button class="speed-btn ${state.speed === 0.7 ? 'active' : ''}" onclick="setSpeed(0.7)">0.7×</button>
+          <button class="speed-btn ${state.speed === 1.0 ? 'active' : ''}" onclick="setSpeed(1.0)">1.0×</button>
+          <button class="speed-btn ${state.speed === 1.2 ? 'active' : ''}" onclick="setSpeed(1.2)">1.2×</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chunks-display" id="chunksDisplay">
+      ${item.chunks.map((c, i) => `<span class="chunk hidden" data-i="${i}">${c}</span>`).join(' ')}
+    </div>
+
+    <div style="font-family:'Fraunces',serif;font-size:17px;margin:16px 0 10px;color:var(--text-dim)">
+      ${item.question}
+    </div>
+
+    <div class="choices" id="choicesDisplay">
+      ${item.choices.map((c, i) => `
+        <button class="choice" onclick="selectChoice(${i})" data-i="${i}">
+          ${c.en}
+          <span class="choice-jp">${c.jp}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function playChunks(stepIdx) {
+  if (state.audioPlaying) return;
+  state.audioPlaying = true;
+  const item = lessons[state.currentQuest].items[stepIdx];
+  const chunks = document.querySelectorAll('.chunk');
+  chunks.forEach(c => c.classList.remove('hidden', 'playing'));
+
+  let i = 0;
+  const playNext = () => {
+    if (i >= item.chunks.length) {
+      state.audioPlaying = false;
+      return;
+    }
+    chunks.forEach(c => c.classList.remove('playing'));
+    if (chunks[i]) chunks[i].classList.add('playing');
+    speak(item.chunks[i], state.speed, () => {
+      setTimeout(() => {
+        i++;
+        playNext();
+      }, 300);
+    });
+  };
+  playNext();
+}
+
+function selectChoice(idx) {
+  state.selectedAnswer = idx;
+  document.querySelectorAll('.choice').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('checkBtn').disabled = false;
+}
+
+// ============ DICTATION ============
+function renderDictation(card, item) {
+  state.dictationFilled = {};
+  const blanksUsed = item.blanks.map(b => false);
+  card.innerHTML = `
+    <div class="lesson-instruction">Step ${state.currentStep + 1} / ${lessons[state.currentQuest].items.length}</div>
+    <div class="lesson-question">音声を聞いて空欄を埋める</div>
+
+    <div class="audio-player">
+      <button class="audio-btn" onclick="playFull(${state.currentStep})">▶</button>
+      <div class="audio-info">
+        <div class="audio-label">FULL SENTENCE · 全文</div>
+        <div class="audio-speed">
+          <button class="speed-btn ${state.speed === 0.7 ? 'active' : ''}" onclick="setSpeed(0.7)">0.7×</button>
+          <button class="speed-btn ${state.speed === 1.0 ? 'active' : ''}" onclick="setSpeed(1.0)">1.0×</button>
+          <button class="speed-btn ${state.speed === 1.2 ? 'active' : ''}" onclick="setSpeed(1.2)">1.2×</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dictation-display" id="dictationDisplay">
+      ${renderDictationTemplate(item.template, [])}
+    </div>
+
+    <div style="font-size:12px;color:var(--text-faint);margin-bottom:8px;letter-spacing:0.1em;">WORD BANK · 候補から選ぶ</div>
+    <div class="word-bank" id="wordBank">
+      ${item.bank.map((w, i) => `
+        <button class="word-chip" data-word="${w}" data-i="${i}" onclick="useWord(this)">${w}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderDictationTemplate(template, filled) {
+  let blankIdx = 0;
+  return template.map(t => {
+    if (t === '___') {
+      const word = filled[blankIdx] || '';
+      const cls = word ? '' : 'empty';
+      const html = `<span class="blank ${cls}" data-bi="${blankIdx}">${word || '____'}</span>`;
+      blankIdx++;
+      return html;
+    }
+    return `<span>${t}</span>`;
+  }).join(' ');
+}
+
+function useWord(btn) {
+  const word = btn.dataset.word;
+  const item = lessons[state.currentQuest].items[state.currentStep];
+  // Find first empty blank
+  state.dictationFilled = state.dictationFilled || [];
+  let emptyIdx = -1;
+  for (let i = 0; i < item.blanks.length; i++) {
+    if (!state.dictationFilled[i]) {
+      emptyIdx = i;
+      break;
+    }
+  }
+  if (emptyIdx === -1) return;
+  state.dictationFilled[emptyIdx] = word;
+  btn.classList.add('used');
+  btn.dataset.filledAt = emptyIdx;
+
+  document.getElementById('dictationDisplay').innerHTML = renderDictationTemplate(item.template, state.dictationFilled);
+
+  // Allow re-clicking blanks to remove
+  document.querySelectorAll('.blank').forEach(b => {
+    b.style.cursor = 'pointer';
+    b.onclick = () => removeWord(parseInt(b.dataset.bi));
+  });
+
+  // Check if all filled
+  if (state.dictationFilled.filter(Boolean).length === item.blanks.length) {
+    document.getElementById('checkBtn').disabled = false;
+  }
+}
+
+function removeWord(bi) {
+  const word = state.dictationFilled[bi];
+  if (!word) return;
+  state.dictationFilled[bi] = null;
+  document.querySelectorAll('.word-chip').forEach(chip => {
+    if (chip.dataset.word === word && chip.dataset.filledAt == bi) {
+      chip.classList.remove('used');
+      delete chip.dataset.filledAt;
+    }
+  });
+  const item = lessons[state.currentQuest].items[state.currentStep];
+  document.getElementById('dictationDisplay').innerHTML = renderDictationTemplate(item.template, state.dictationFilled);
+  document.querySelectorAll('.blank').forEach(b => {
+    b.style.cursor = 'pointer';
+    b.onclick = () => removeWord(parseInt(b.dataset.bi));
+  });
+  document.getElementById('checkBtn').disabled = true;
+}
+
+function playFull(stepIdx) {
+  if (state.audioPlaying) return;
+  state.audioPlaying = true;
+  const item = lessons[state.currentQuest].items[stepIdx];
+  speak(item.full, state.speed, () => {
+    state.audioPlaying = false;
+  });
+}
+
+// ============ SPEAKING ============
+let recognition = null;
+let isRecording = false;
+let recognizedText = '';
+
+function renderSpeaking(card, item) {
+  recognizedText = '';
+  card.innerHTML = `
+    <div class="lesson-instruction">Step ${state.currentStep + 1} / ${lessons[state.currentQuest].items.length}</div>
+    <div class="lesson-question">次のフレーズを声に出して言ってください</div>
+
+    <div class="speaking-card">
+      <div class="target-phrase">${item.target}</div>
+      <div class="target-jp">${item.jp}</div>
+
+      <button class="audio-btn" style="margin: 0 auto 24px;" onclick="playFull(${state.currentStep})">▶</button>
+
+      <button class="mic-button" id="micBtn" onclick="toggleRecording()">🎤</button>
+      <div class="mic-hint" id="micHint">タップして録音開始</div>
+      <div class="transcript" id="transcript">あなたの発音がここに表示されます</div>
+
+      <div style="font-size:12px;color:var(--text-faint);margin-top:8px;">${item.hint}</div>
+    </div>
+  `;
+}
+
+function toggleRecording() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    document.getElementById('transcript').textContent = '⚠ お使いのブラウザは音声認識に対応していません。Chrome/Safari推奨';
+    document.getElementById('transcript').style.color = 'var(--crimson)';
+    // Allow manual check
+    document.getElementById('checkBtn').disabled = false;
+    state.selectedAnswer = 'skip';
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = document.getElementById('micBtn');
+  const transcript = document.getElementById('transcript');
+  const hint = document.getElementById('micHint');
+
+  if (isRecording) {
+    if (recognition) recognition.stop();
+    return;
+  }
+
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    btn.classList.add('recording');
+    hint.textContent = '話してください... (タップで停止)';
+    transcript.textContent = '';
+    transcript.style.color = 'var(--text)';
+  };
+
+  recognition.onresult = (e) => {
+    let txt = '';
+    for (let i = 0; i < e.results.length; i++) {
+      txt += e.results[i][0].transcript;
+    }
+    recognizedText = txt;
+    transcript.textContent = txt;
+  };
+
+  recognition.onerror = (e) => {
+    transcript.textContent = '⚠ エラー: ' + e.error;
+    transcript.style.color = 'var(--crimson)';
+    isRecording = false;
+    btn.classList.remove('recording');
+    hint.textContent = 'もう一度試してください';
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    btn.classList.remove('recording');
+    hint.textContent = recognizedText ? '✓ 認識完了 — Check ボタンを押してください' : 'もう一度試してください';
+    if (recognizedText) {
+      state.selectedAnswer = recognizedText;
+      document.getElementById('checkBtn').disabled = false;
+    }
+  };
+
+  recognition.start();
+}
+
+// ============ SHADOWING ============
+function renderShadowing(card, item) {
+  card.innerHTML = `
+    <div class="lesson-instruction">Step ${state.currentStep + 1} / ${lessons[state.currentQuest].items.length}</div>
+    <div class="lesson-question">音声に重ねて発声してください</div>
+
+    <div class="audio-player">
+      <button class="audio-btn" onclick="playShadowChunks(${state.currentStep})">▶</button>
+      <div class="audio-info">
+        <div class="audio-label">SHADOWING · チャンクごとに繰り返し</div>
+        <div class="audio-speed">
+          <button class="speed-btn ${state.speed === 0.7 ? 'active' : ''}" onclick="setSpeed(0.7)">0.7×</button>
+          <button class="speed-btn ${state.speed === 1.0 ? 'active' : ''}" onclick="setSpeed(1.0)">1.0×</button>
+          <button class="speed-btn ${state.speed === 1.2 ? 'active' : ''}" onclick="setSpeed(1.2)">1.2×</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chunks-display">
+      ${item.chunks.map((c, i) => `<span class="chunk" data-i="${i}">${c}</span>`).join(' ')}
+    </div>
+
+    <div style="font-family:'Shippori Mincho',serif;font-size:14px;color:var(--text-dim);margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;">
+      ${item.jp}
+    </div>
+
+    <div style="font-size:12px;color:var(--text-faint);margin-top:16px;text-align:center;">
+      ▶ ボタンを押して、音声と一緒に声に出してください<br>
+      完了したら Check を押す
+    </div>
+  `;
+
+  // For shadowing, auto-enable check button (self-assessment)
+  setTimeout(() => {
+    document.getElementById('checkBtn').disabled = false;
+    document.getElementById('checkBtn').textContent = 'Done · 完了';
+  }, 500);
+  state.selectedAnswer = 'shadow_done';
+}
+
+function playShadowChunks(stepIdx) {
+  if (state.audioPlaying) return;
+  state.audioPlaying = true;
+  const item = lessons[state.currentQuest].items[stepIdx];
+  const chunks = document.querySelectorAll('.chunk');
+
+  let i = 0;
+  const playNext = () => {
+    if (i >= item.chunks.length) {
+      state.audioPlaying = false;
+      return;
+    }
+    chunks.forEach(c => c.classList.remove('playing'));
+    if (chunks[i]) chunks[i].classList.add('playing');
+    speak(item.chunks[i], state.speed, () => {
+      setTimeout(() => {
+        i++;
+        if (i >= item.chunks.length) {
+          chunks.forEach(c => c.classList.remove('playing'));
+        }
+        playNext();
+      }, 800); // pause for shadowing
+    });
+  };
+  playNext();
+}
+
+// ============ SPEECH SYNTHESIS ============
+function speak(text, rate, onEnd) {
+  if (!window.speechSynthesis) {
+    if (onEnd) onEnd();
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  // Try to pick a natural voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('Samantha')) ||
+                    voices.find(v => v.name.includes('Daniel')) ||
+                    voices.find(v => v.lang === 'en-US' && v.localService) ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) u.voice = preferred;
+  u.onend = () => { if (onEnd) onEnd(); };
+  u.onerror = () => { if (onEnd) onEnd(); };
+  window.speechSynthesis.speak(u);
+}
+
+function setSpeed(s) {
+  state.speed = s;
+  document.querySelectorAll('.speed-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.textContent) === s);
+  });
+}
+
+// ============ CHECK ANSWER ============
+function checkAnswer() {
+  const quest = lessons[state.currentQuest];
+  const item = quest.items[state.currentStep];
+  let correct = false;
+  let detail = '';
+
+  if (item.type === 'chunk_listen') {
+    correct = item.choices[state.selectedAnswer]?.correct;
+    document.querySelectorAll('.choice').forEach((c, i) => {
+      c.classList.remove('selected');
+      if (item.choices[i].correct) c.classList.add('correct');
+      else if (i === state.selectedAnswer && !item.choices[i].correct) c.classList.add('wrong');
+    });
+    detail = `<strong>${item.full}</strong><br>${item.jp}`;
+  } else if (item.type === 'dictation') {
+    correct = item.blanks.every((b, i) => state.dictationFilled[i] === b);
+    document.querySelectorAll('.blank').forEach((b, i) => {
+      if (state.dictationFilled[i] === item.blanks[i]) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        b.textContent = item.blanks[i];
+      }
+    });
+    detail = `<strong>${item.full}</strong><br>${item.jp}`;
+  } else if (item.type === 'speaking') {
+    if (state.selectedAnswer === 'skip') {
+      correct = true; // manual mode
+      detail = `<strong>正解:</strong> ${item.target}<br>${item.jp}<br><em>音声認識が使えない場合は自己採点で続けてください</em>`;
+    } else {
+      const target = item.target.toLowerCase().replace(/[.,?!]/g, '').trim();
+      const spoken = (state.selectedAnswer || '').toLowerCase().replace(/[.,?!]/g, '').trim();
+      const targetWords = target.split(/\s+/);
+      const spokenWords = spoken.split(/\s+/);
+      const matched = targetWords.filter(w => spokenWords.includes(w)).length;
+      const ratio = matched / targetWords.length;
+      correct = ratio >= 0.7;
+      detail = `<strong>正解:</strong> ${item.target}<br><strong>あなた:</strong> ${state.selectedAnswer}<br>一致度: ${Math.round(ratio * 100)}%`;
+    }
+  } else if (item.type === 'shadowing') {
+    correct = true; // self-assessment
+    detail = `<strong>${item.text}</strong><br>${item.jp}`;
+  }
+
+  state.lessonTotal++;
+  if (correct) {
+    state.lessonCorrect++;
+  } else {
+    state.currentHearts = Math.max(0, state.currentHearts - 1);
+    document.getElementById('lessonCard').classList.add('shake');
+    setTimeout(() => document.getElementById('lessonCard').classList.remove('shake'), 400);
+  }
+  document.getElementById('lessonHearts').textContent = state.currentHearts;
+
+  // Show feedback
+  const banner = document.getElementById('feedbackBanner');
+  banner.classList.add('show', correct ? 'correct' : 'wrong');
+  document.getElementById('feedbackTitle').textContent = correct ? '✓ Excellent' : '× Try again next time';
+  document.getElementById('feedbackTitle').className = 'feedback-title ' + (correct ? 'correct' : 'wrong');
+  document.getElementById('feedbackDetail').innerHTML = detail;
+
+  // Change check button to continue
+  document.getElementById('checkBtn').textContent = 'Continue →';
+  document.getElementById('checkBtn').onclick = nextStep;
+}
+
+function nextStep() {
+  const quest = lessons[state.currentQuest];
+  state.currentStep++;
+  state.selectedAnswer = null;
+
+  if (state.currentHearts <= 0) {
+    // out of hearts
+    finishLesson(false);
+    return;
+  }
+
+  if (state.currentStep >= quest.items.length) {
+    finishLesson(true);
+    return;
+  }
+
+  document.getElementById('checkBtn').onclick = checkAnswer;
+  renderLessonStep();
+}
+
+function finishLesson(success) {
+  const quest = lessons[state.currentQuest];
+  const elapsed = Math.floor((Date.now() - state.lessonStartTime) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const accuracy = state.lessonTotal > 0 ? Math.round((state.lessonCorrect / state.lessonTotal) * 100) : 0;
+
+  if (success) {
+    state.questsCompleted[state.currentQuest] = true;
+    const earnedXp = Math.round(quest.xp * (accuracy / 100) * 1.0);
+    state.xp += Math.max(quest.xp * 0.5, earnedXp); // minimum half XP
+    state.xp = Math.round(state.xp);
+
+    // Level up check
+    while (state.xp >= state.level * 100) {
+      state.level++;
+    }
+
+    // Streak check
+    const today = new Date().toDateString();
+    const todayIdx = (new Date().getDay() + 6) % 7;
+    if (state.lastPlayedDate !== today) {
+      state.weekDone[todayIdx] = true;
+      state.streak++;
+      state.lastPlayedDate = today;
+    } else {
+      state.weekDone[todayIdx] = true;
+    }
+
+    document.getElementById('rewardXp').textContent = '+' + Math.max(Math.round(quest.xp * 0.5), Math.round(quest.xp * (accuracy / 100)));
+    document.getElementById('rewardAccuracy').textContent = accuracy + '%';
+    document.getElementById('rewardTime').textContent = mins + ':' + secs.toString().padStart(2, '0');
+
+    document.getElementById('lessonScreen').style.display = 'none';
+    document.getElementById('completeScreen').style.display = 'block';
+  } else {
+    // Out of hearts
+    state.hearts = Math.max(0, state.hearts - 1);
+    alert('ハートがなくなりました。ホームに戻ります。');
+    returnHome();
+  }
+  saveState();
+}
+
+function returnHome() {
+  // Refill hearts if all quests done
+  if (Object.values(state.questsCompleted).every(v => v)) {
+    state.hearts = 5;
+  }
+  saveState();
+  renderHome();
+}
+
+function exitLesson() {
+  if (confirm('レッスンを終了しますか?進捗は保存されません。')) {
+    renderHome();
+  }
+}
+
+// ============ INIT ============
+// Wait for voices to load
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+  window.speechSynthesis.getVoices(); // trigger load
+}
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed:', err));
+  });
+}
+
+init();
+</script>
+</body>
+</html>
